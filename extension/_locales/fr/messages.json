@@ -1,0 +1,14 @@
+{
+    "manifestAppName": {
+        "message": "scrap immo",
+        "description": "App name"
+    },
+    "manifestAppDescription": {
+        "message": "Permet de scrapper les sites immo...",
+        "description": "App description"
+    },
+    "jsTestLang": {
+        "message": "injected FR",
+        "description": "test"
+    }
+}

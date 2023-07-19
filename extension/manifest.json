@@ -1,7 +1,30 @@
 {
-    "manifest_version": 3,
-    "name": "test",
-    "version": "0.0.0",
+	"manifest_version": 3,
+	"default_locale": "en",
     "author" : "trc",
-    "description": "test 1st commit"
+	"name": "__MSG_manifestAppName__",
+	"description": "__MSG_manifestAppDescription__",
+    "version": "0.0.0",
+    "icons" : {
+		"48" : "img/icon-48.png",
+		"64" : "img/icon-64.png",
+		"128" : "img/icon-128.png",
+		"256" : "img/icon-256.png"
+	},
+	"host_permissions":[
+		"https://www.seloger.com/*"
+	],
+	"content_scripts": [
+        {
+            "matches" : [ "https://www.seloger.com/*" ],
+            "js": ["injected.js"],
+			"run_at": "document_end"
+        }
+    ],
+	"web_accessible_resources": [
+		{
+			"resources": [ "img/icon-48.png" ],
+			"matches": [ "https://www.seloger.com/*" ]
+		}
+	]
 }
