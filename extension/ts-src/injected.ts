@@ -18,6 +18,11 @@ interface ConfJsonElement {
 
 type ConfJson = ConfJsonElement[];
 
+interface LogOptions {
+    type?:'success' | 'info' | 'warning' | 'error';
+    data:any;
+}
+
 const version = '0.0.0';
 const extensionId = 'PropertEase';
 // TODO get a real server for the project
@@ -30,8 +35,26 @@ function getXpathNodes(expression: string, context = document.body) {
     return document.evaluate(expression, context, null, XPathResult.ANY_TYPE, null);
 }
 
-// uncomment & reload extension to reset confjson
-// storage.remove([storageKeyConfjson]);
+function log(options:LogOptions) {
+    const colorType = {
+        success:    { str:'s', c:'#292929', bgc:'#6BEC7C' },
+        info:       { str:'i', c:'#292929', bgc:'#00b0b0' },
+        warning:    { str:'w', c:'#fff', bgc:'#ed7d04' },
+        error:      { str:'e', c:'#fff', bgc:'#f00' }
+    };
+    let {type, data} = options;
+    type = type || 'info';
+
+    let log = [
+        `%c${extensionId}%c${colorType[type].str}`,
+        `color: #fff; padding: 1px 3px; border-radius: 3px 0 0 3px; background: #0000bd;`,
+        `color: ${colorType[type].c}; padding: 1px 3px; border-radius: 0 3px 3px 0; background: ${colorType[type].bgc};`
+    ];
+    if(data) {
+        log = log.concat(data);
+    }
+    console.log.apply(console, log);
+}
 
 
 /*window.chrome.storage.local.set({test:'ok'});
@@ -47,7 +70,8 @@ setTimeout(() => {
 function fetchConfJson(): Promise<ConfJson> {
     return new Promise(res => {
         const v = version.split('.');
-        fetch(`${host}rle/getConf/?v=${confVersion}`)
+        log({data:`fetching conf JSON : ${confVersion}`});
+        fetch(`${host}/rle/getConf/?v=${confVersion}`)
             .then(res => {
                 if (!res.ok) {
                     throw 'error fetching conf JSON';
@@ -55,13 +79,16 @@ function fetchConfJson(): Promise<ConfJson> {
                 return res.json();
             })
             .then((data: ConfJson | 'error') => {
+                if (data === 'error') {
+                    log({data:'fetched conf JSON returned an error'});
+                }
                 if (data !== 'error') {
                     storage.set({[storageKeyConfjson]: data});
                     res(data);
                 }
             })
             .catch(e => {
-                console.log(e);
+                log({type:'error', data:e});
             });
     });
 }
@@ -73,12 +100,14 @@ function getConfJson(): Promise<ConfJson> {
                 if (!data) {
                     fetchConfJson()
                         .then(data => {
+                            log({type:'success', data:'fetched conf JSON'});
                             res(data);
                         })
                         .catch(e => {
                             rej(e);
                         });
                 } else {
+                    log({data:'conf JSON alredy in cache'});
                     res(data);
                 }
             });
@@ -88,15 +117,17 @@ function getConfJson(): Promise<ConfJson> {
 let currentConf = {};
 getConfJson()
     .then(datas => {
+        log({data:datas});
         datas.forEach(data => {
             if(new URL(window.location.href).host.endsWith(data.host)) {
                 currentConf = data;
             }
         });
-        console.log('current conf', currentConf);
+        log({type:'success', data:'current conf'});
+        log({type:'success', data:currentConf});
     })
     .catch(e => {
-        console.log(e);
+        log({type:'error', data:e});
     });
 
 /*const xPaths = [];
@@ -163,5 +194,9 @@ document.querySelectorAll('*').forEach(el => {
     }
 });
 container.style.zIndex = `${maxZindex + 1}`;
+container.addEventListener('click', () => {
+    storage.remove([storageKeyConfjson]);
+    log({data:'json conf removed from storage.'});
+})
 
-console.log(window.chrome.i18n.getMessage('jsTestLang'));
+log({type:'success', data:window.chrome.i18n.getMessage('jsTestLang')});
