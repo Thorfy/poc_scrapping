@@ -1,5 +1,66 @@
 "use strict";
-const extensionId = 'statsSeloger';
+const version = '0.0.0';
+const extensionId = 'PropertEase';
+const host = '#';
+const storage = window.chrome.storage.local;
+const confVersion = `${version.split('.')[0]}.${version.split('.')[1]}`;
+const storageKeyConfjson = `confjson-${confVersion}`;
+function getXpathNodes(expression, context = document.body) {
+    return document.evaluate(expression, context, null, XPathResult.ANY_TYPE, null);
+}
+function fetchConfJson() {
+    return new Promise(res => {
+        const v = version.split('.');
+        fetch(`${host}rle/getConf/?v=${confVersion}`)
+            .then(res => {
+            if (!res.ok) {
+                throw 'error fetching conf JSON';
+            }
+            return res.json();
+        })
+            .then((data) => {
+            if (data !== 'error') {
+                storage.set({ [storageKeyConfjson]: data });
+                res(data);
+            }
+        })
+            .catch(e => {
+            console.log(e);
+        });
+    });
+}
+function getConfJson() {
+    return new Promise((res, rej) => {
+        storage.get(storageKeyConfjson)
+            .then(({ [storageKeyConfjson]: data }) => {
+            if (!data) {
+                fetchConfJson()
+                    .then(data => {
+                    res(data);
+                })
+                    .catch(e => {
+                    rej(e);
+                });
+            }
+            else {
+                res(data);
+            }
+        });
+    });
+}
+let currentConf = {};
+getConfJson()
+    .then(datas => {
+    datas.forEach(data => {
+        if (new URL(window.location.href).host.endsWith(data.host)) {
+            currentConf = data;
+        }
+    });
+    console.log('current conf', currentConf);
+})
+    .catch(e => {
+    console.log(e);
+});
 const style = document.createElement('style');
 style.textContent = `
 #${extensionId} {

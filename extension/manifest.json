@@ -11,12 +11,31 @@
 		"128" : "img/icon-128.png",
 		"256" : "img/icon-256.png"
 	},
+	"permissions": [ "storage" ],
 	"host_permissions":[
-		"https://www.seloger.com/*"
+		"https://www.seloger.com/*",
+		"https://www.fnaim.fr/*",
+		"https://www.logic-immo.com/*",
+		"https://www.immonot.com/*",
+		"https://www.avendrealouer.fr/*",
+		"https://www.immobilier.notaires.fr/*",
+		"https://www.bellesdemeures.com/*",
+		"https://immobilier.lefigaro.fr/*",
+		"https://www.ouestfrance-immo.com/*"
 	],
 	"content_scripts": [
         {
-            "matches" : [ "https://www.seloger.com/*" ],
+            "matches" : [
+				"https://www.seloger.com/*",
+				"https://www.fnaim.fr/*",
+				"https://www.logic-immo.com/*",
+				"https://www.immonot.com/*",
+				"https://www.avendrealouer.fr/*",
+				"https://www.immobilier.notaires.fr/*",
+				"https://www.bellesdemeures.com/*",
+				"https://immobilier.lefigaro.fr/*",
+				"https://www.ouestfrance-immo.com/*"
+			],
             "js": ["injected.js"],
 			"run_at": "document_end"
         }
