@@ -21,7 +21,7 @@ type ConfJson = ConfJsonElement[];
 const version = '0.0.0';
 const extensionId = 'PropertEase';
 // TODO get a real server for the project
-const host = 'https://therandomcode.net/';
+const host = '#';
 const storage = window.chrome.storage.local;
 const confVersion = `${version.split('.')[0]}.${version.split('.')[1]}`;
 const storageKeyConfjson = `confjson-${confVersion}`;
