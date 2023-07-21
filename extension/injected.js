@@ -9,18 +9,18 @@ function getXpathNodes(expression, context = document.body) {
     return document.evaluate(expression, context, null, XPathResult.ANY_TYPE, null);
 }
 function log(options) {
-    const colorType = {
-        success: { str: 's', c: '#292929', bgc: '#6BEC7C' },
-        info: { str: 'i', c: '#292929', bgc: '#00b0b0' },
-        warning: { str: 'w', c: '#fff', bgc: '#ed7d04' },
-        error: { str: 'e', c: '#fff', bgc: '#f00' }
+    const logConfig = {
+        success: { str: 's', c: '120' },
+        info: { str: 'i', c: '180' },
+        warning: { str: 'w', c: '30' },
+        error: { str: 'e', c: '0' }
     };
     let { type, data } = options;
     type = type || 'info';
     let log = [
-        `%c${extensionId}%c${colorType[type].str}`,
+        `%c${extensionId}%c${logConfig[type].str}`,
         `color: #fff; padding: 1px 3px; border-radius: 3px 0 0 3px; background: #0000bd;`,
-        `color: ${colorType[type].c}; padding: 1px 3px; border-radius: 0 3px 3px 0; background: ${colorType[type].bgc};`
+        `color: hsl(${logConfig[type].c}, 50%, 20%); padding: 1px 3px; border-radius: 0 3px 3px 0; background: hsl(${logConfig[type].c}, 50%, 70%);`
     ];
     if (data) {
         log = log.concat(data);
