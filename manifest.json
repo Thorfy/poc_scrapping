@@ -4,7 +4,7 @@
     "author" : "trc",
 	"name": "__MSG_manifestAppName__",
 	"description": "__MSG_manifestAppDescription__",
-    "version": "0.0.0",
+    "version": "1.0.0",
     "icons" : {
 		"48" : "img/icon-48.png",
 		"64" : "img/icon-64.png",
